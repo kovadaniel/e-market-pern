@@ -7,9 +7,11 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "./context";
 import { check } from "./http/userAPI";
 import Loader from "./components/Loader";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = observer(() => {
-  const { user } = useContext(AppContext);
+  const { store: { user } } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ const App = observer(() => {
         user.setIsAuth(true);
     }).finally(() => {
       setIsLoading(false);
-    }).catch((e) => 
+    }).catch((e) =>
       console.log("error with auth checking:", e.response?.data.message))
   }, []);
  
@@ -35,6 +37,7 @@ const App = observer(() => {
         <NavBar/>
         <AppRouter/>  
       </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 })

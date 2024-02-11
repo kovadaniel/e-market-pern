@@ -1,9 +1,9 @@
 import { Button, Container } from "react-bootstrap"
-import CreateType from "../components/modals/CreateType";
-import CreateBrand from "../components/modals/CreateBrand";
-import CreateDevice from "../components/modals/CreateDevice";
+import TypeSettings from "../components/modals/TypeSettings";
+import BrandSettings from "../components/modals/BrandSettings";
+import DeviceSettings from "../components/modals/DeviceSettings";
 import { useContext, useEffect, useState } from "react";
-import { fetchBrands, fetchTypes } from "../http/deviceAPI";
+// import { fetchBrands, fetchTypes } from "../http/device API";
 import { AppContext } from "../context";
 
 const Admin = () => {
@@ -11,19 +11,15 @@ const Admin = () => {
     const [typeVisible, setTypeVisible] = useState(false);
     const [deviceVisible, setDeviceVisible] = useState(false);
 
-    const { device } = useContext(AppContext);
+    const { api } = useContext(AppContext);
 
     useEffect(() => {
-        fetchTypes()
-        .then(data => {
-            device.setTypes(data)
-        })
+        api.device.fetchTypes()
         .catch(e => console.log("error when fetchng types:", e.response.data.message))
-        fetchBrands()
-        .then(data => {
-            device.setBrands(data)
-        })
+        api.device.fetchBrands()
         .catch(e => console.log("error when fetchng brands:", e.response.data.message))
+        api.device.fetchDevices()
+        .catch(e => console.log("error when fetchng devices:", e.response.data.message))
     }, [])
 
     const toggleBrand = () => {
@@ -43,25 +39,25 @@ const Admin = () => {
                 variant="outline-dark" 
                 onClick={toggleBrand}
             >
-                Добавить бренд
+                Настройки брендов
             </Button>
             <Button 
                 className="mt-2" 
                 variant="outline-dark" 
                 onClick={toggleType}
             >
-                Добавить тип
+                Настройки типов
             </Button>
             <Button 
                 className="mt-2" 
                 variant="outline-dark" 
                 onClick={toggleDevice}
             >
-                Добавить устройство
+                Настройки устройств
             </Button>
-            <CreateBrand show={brandVisible} onHide={toggleBrand} />
-            <CreateType show={typeVisible} onHide={toggleType} />
-            <CreateDevice show={deviceVisible} onHide={toggleDevice} />
+            <BrandSettings show={brandVisible} onHide={toggleBrand} />
+            <TypeSettings show={typeVisible} onHide={toggleType} />
+            <DeviceSettings show={deviceVisible} onHide={toggleDevice} />
         </Container>
     );
 }

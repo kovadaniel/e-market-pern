@@ -5,10 +5,12 @@ export default class DeviceStore{
         this._types = []
         this._brands = []
         this._devices = []
-        this._device = [] // device (current) info for Device page
-        //this._deviceRating = [] // user's (current) rating of device for Device page
-        this._selectedType = {}
-        this._selectedBrand = {}
+        // device (current) info for Device page:
+        this._device = null
+        // user's rating of a device (current) for Device page:
+        this._deviceRating = null
+        this._selectedType = null
+        this._selectedBrand = null
         this._page = 1
         this._totalCount = 0
         this._limit = 3
@@ -25,17 +27,16 @@ export default class DeviceStore{
         this._devices = devices;
     }
     setDevice(device){
-        this._devices = device;
+        this._device = device;
     }
-
-    /* setDeviceRating(deviceRating){
+    setDeviceRating(deviceRating){
         this._deviceRating = deviceRating;
-    } */
+    }
 
     setSelectedType(type){
         this.setPage(1);
         this._selectedType = type;
-        this._selectedBrand = {};
+        this._selectedBrand = null;
     }
     setSelectedBrand(brand){
         this.setPage(1);

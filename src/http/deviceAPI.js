@@ -1,88 +1,82 @@
-import { $authHost, $host } from "./index";
+export default class DeviceApi {
+    constructor(api, store) {
+        this.api = api;
+        this.store = store;
+    }
 
-//-------------------------------------------
-// type
+    /* ======= type ======= */
+    async createType (type) {
+        const { data } = await this.api.$authHost.post("api/type", type);
+        return data;
+    }
+    async fetchTypes() {
+        const { data } = await this.api.$host.get("api/type");
+        this.store.device.setTypes(data);
+    }
+    async deleteType (id) {
+        const { data } = await this.api.$authHost.delete("api/type/" + id);
+        return data;
+    }
 
-export const createType = async (type) => {
-    const { data } = await $authHost.post("api/type", type);
-    return data;
-}
+    /* ======= brand ======= */
+    async createBrand (payload) {
+        const { data } = await this.api.$authHost.post("api/brand", payload);
+        return data;
+    }
+    async fetchBrands () {
+        const { data } = await this.api.$host.get("api/brand");
+        this.store.device.setBrands(data);
+    }
+    async deleteBrand (id) {
+        const { data } = await this.api.$authHost.delete("api/brand/" + id);
+        return data;
+    }
 
-export const fetchTypes = async () => {
-    const { data } = await $host.get("api/type");
-    return data;
-}
+    /* ======= device ======= */
+    async createDevice (device) {
+        const { data } = await this.api.$authHost.post("api/device", device);
+        return data;
+    }
+    async fetchDevices (typeId, brandId, page, limit) {
+        const { data } = await this.api.$host.get(`api/device`, {params: {
+            typeId, brandId, page, limit // params will be fitted if they are not undefined
+        }});
+        this.store.device.setDevices(data.rows);
+        this.store.device.setTotalCount(data.count);
+    }
+    async fetchDevice (id) {
+        const { data } = await this.api.$host.get(`api/device/${id}`);
+        this.store.device.setDevice(data);
+    }
+    async deleteDevice (id) {
+        const { data } = await this.api.$authHost.delete("api/device/" + id);
+        return data;
+    }
 
-export const deleteType = async (type) => {
-    const { data } = await $authHost.delete("api/type", type);
-    return data;
-}
-
-//-------------------------------------------
-// brand
-
-export const createBrand = async (brand) => {
-    const { data } = await $authHost.post("api/brand", brand);
-    return data;
-}
-
-export const fetchBrands = async () => {
-    const { data } = await $host.get("api/brand");
-    return data;
-}
-
-export const deleteBrand = async (brand) => {
-    const { data } = await $authHost.delete("api/brand", brand);
-    return data;
-}
-
-//-------------------------------------------
-// device
-
-export const createDevice = async (device) => {
-    const { data } = await $authHost.post("api/device", device);
-    return data;
-}
-
-export const fetchDevices = async (typeId, brandId, page, limit) => {
-    const { data } = await $host.get(`api/device`, {params: {
-        typeId, brandId, page, limit // params will be fitted if they are not undefined
-    }});
-    return data;
-}
-
-export const fetchDevice = async (id) => {
-    const { data } = await $host.get(`api/device/${id}`);
-    return data;
-}
-
-export const deleteDevice = async (device) => {
-    const { data } = await $authHost.delete("api/device", device);
-    return data;
-}
-
-// ---------------------------------------------
-// rating
-
-export const addRating = async (deviceId, rate) => {
-    const { data } = await $authHost.post("api/rating", { 
-        deviceId,
-        rate,
-    });
-    return data;
-}
-
-export const changeRating = async (id, rate) => {
-    const { data } = await $authHost.patch("api/rating", { 
-        id,
-        rate,
-    });
-    return data;
-}
-
-export const checkRating = async (deviceId) => {
-    const { data } = await $authHost.get("api/rating/check", { 
-        params: { deviceId },
-    });
-    return data;
+    /* ======= rating ======= */
+    /**
+     * @returns Rating object
+     */
+    async addRating (deviceId, rate) {
+        const { data } = await this.api.$authHost.post("api/rating", { 
+            deviceId,
+            rate,
+        });
+        // put received rating to state:
+        this.store.device.setDeviceRating(data);
+    }
+    async changeRating (id, rate) {
+        const { data } = await this.api.$authHost.patch("api/rating", { 
+            id,
+            rate,
+        });
+        // put received rating to state:
+        this.store.device.setDeviceRating(data);
+    }
+    async checkRating (deviceId) {
+        const { data } = await this.api.$authHost.get("api/rating/check", { 
+            params: { deviceId },
+        });
+        this.store.device.setDeviceRating(data);
+    }
 }

@@ -10,7 +10,7 @@ import TrashCan from "../components/images/TrashCanIcon";
 import { useHover } from "usehooks-ts";
 
 const Basket = observer(() => {
-    const { basket } = useContext(AppContext);
+    const { store: { basket } } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
 
     const deleteButtonRef = useRef(null);

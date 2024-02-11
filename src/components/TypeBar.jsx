@@ -4,10 +4,17 @@ import { AppContext } from '../context/index'
 import { ListGroup } from 'react-bootstrap';
 
 const TypeBar = observer(() => {
-    const {device} = useContext(AppContext)
+    const { store: { device }} = useContext(AppContext);
 
     return (  
         <ListGroup>
+            <ListGroup.Item 
+                className='typebar-item'
+                active={!device.selectedType}
+                onClick={() => device.setSelectedType(null)}
+            >
+                Все
+            </ListGroup.Item>
             {device.types.map(type => 
                 <ListGroup.Item 
                     key={type.id}

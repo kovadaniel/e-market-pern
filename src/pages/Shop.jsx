@@ -5,42 +5,30 @@ import DeviceList from "../components/DeviceList";
 import { observer } from "mobx-react-lite";
 import { useContext, useEffect } from "react";
 import { AppContext } from "../context";
-import { fetchBrands, fetchDevices, fetchTypes } from "../http/deviceAPI";
 import Pages from "../components/Pages";
 
+
 const Shop = observer(() => {
-    const { device } = useContext(AppContext);
+    const { api, store: { device } } = useContext(AppContext);
 
     useEffect(() => {
-        fetchTypes()
-        .then(data => {
-            device.setTypes(data)
-        })
+        api.device.fetchTypes()
         .catch(e => console.log("Error when fetching types:", e.response.data.message))
         
-        fetchBrands()
-        .then(data => {
-            device.setBrands(data)
-        })
+        api.device.fetchBrands()
         .catch(e => console.log("Error when fetching brands:", e.response.data.message))
 
-        fetchDevices(null, null, device.page, device.limit).then(data => {
-            device.setDevices(data.rows);
-            device.setTotalCount(data.count);
-        })
+        api.device.fetchDevices(null, null, device.page, device.limit)
         .catch(e => console.log("Error when fetching devices:", e.response.data.message))
     }, [])
 
     useEffect(() => {
-        fetchDevices(
-            device.selectedType.id, 
-            device.selectedBrand.id,
+        api.device.fetchDevices(
+            device.selectedType?.id , 
+            device.selectedBrand?.id,
             device.page,
             device.limit
-        ).then(data => {
-            device.setDevices(data.rows);
-            device.setTotalCount(data.count);
-        })
+        )
     }, [device.page, device.selectedType, device.selectedBrand])
 
     return ( 

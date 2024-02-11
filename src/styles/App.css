@@ -26,6 +26,7 @@
 .typebar-item, .brandbar-item {
     transition: all .2s ease;
     cursor: pointer;
+    overflow-x: hidden;
 }
 
 .typebar-item.active, .brandbar-item.active{
@@ -34,8 +35,9 @@
     color: white;
 }
 
+/*========================== SHOP PAGE =============================*/
 .product-card {
-    height: 250px;
+    height: 270px;
     cursor: pointer;
     overflow-y: hidden;
 }
@@ -43,6 +45,30 @@
     object-fit: contain;
     background: rgba(0, 0, 0, .03);
 }
+
+.product-card-subtitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+@media (max-width: 992px) {
+    .product-card-subtitle {
+        flex-direction: column;
+        font-size: .875rem;
+
+    }
+}
+@media (max-width: 1200px) {
+    .product-card-title {
+        font-size: 1.125rem;
+    }
+}
+@media (max-width: 992px) {
+    .product-card-title {
+        font-size: 1rem;
+    }
+}
+
 .product-card-rate{
     color: black;
 }
@@ -121,8 +147,8 @@
     color: #000;
     text-decoration: none;
 }
-/*========================== LOADER ===========================*/
 
+/*========================== LOADER ===========================*/
 .loader-wrap{
     height: 100%;
     width: 100%;
@@ -134,4 +160,33 @@
 
 .loader-wrap-full{
     height: 100vh;
+    color: lightcyan;
+}
+
+/* =================== Bootstrap pagination =================== */
+.pagination {
+    --bs-pagination-color: #808080;
+    --bs-pagination-hover-color: #6d6d6d;
+    --bs-pagination-active-color: #fff;
+    --bs-pagination-active-border-color: transparent;
+    --bs-pagination-active-bg: darkcyan;
+    --bs-pagination-hover-bg: lightcyan;
+}
+/* ====================================== */
+
+/*============================= ADMIN PAGE ==================================*/
+.simple-dropdown{
+    width: fit-content;
+}
+
+.delete-device-list-wrap{
+    position: absolute;
+    max-height: 200px;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.delete-device-list-item{
+    height: 40px;
+    overflow: hidden;
 }

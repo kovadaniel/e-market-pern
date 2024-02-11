@@ -15,7 +15,7 @@ const Auth = observer(() => {
     const isLogin = location.pathname === LOGIN_ROUTE;
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { user } = useContext(AppContext);
+    const { store: { user } } = useContext(AppContext);
     const navigate = useNavigate();
 
     const [error, setError] = useState("");
@@ -35,7 +35,6 @@ const Auth = observer(() => {
                 navigate(SHOP_ROUTE)
             }
         } catch(e) {
-            //alert(e.response?.data.message)
             setError(e.response ? e.response.data.message : "Неизвестная ошибка")
         }
     }

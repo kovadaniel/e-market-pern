@@ -11,7 +11,7 @@ import cartIcon from "../assets/images/cart.svg"
  
 
 const NavBar = observer(() => {
-    const {user} = useContext(AppContext);
+    const { store: { user } } = useContext(AppContext);
     const navigate = useNavigate();
 
     const handleExit = () => {

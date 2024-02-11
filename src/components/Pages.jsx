@@ -4,7 +4,9 @@ import { AppContext } from "../context";
 import { Pagination } from "react-bootstrap";
 
 const Pages = observer(() => {
-    const { device } = useContext(AppContext);
+    const { store: { 
+        device 
+    }} = useContext(AppContext);
     const pageCount = Math.ceil(device.totalCount / device.limit)
     const pages = [];
     for (let i = 0; i < pageCount; i++){

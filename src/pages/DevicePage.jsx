@@ -1,16 +1,23 @@
 import { Button, Card, Col, Container, Image, Row } from "react-bootstrap";
 import bigStar from '../assets/images/big-star.svg';
-import { useEffect, useState } from "react";
-import { addRating, changeRating, checkRating, fetchDevice } from "../http/deviceAPI";
+import { useContext, useEffect, useState } from "react";
+//import { addRating, changeRating, checkRating, fetchDevice } from "../http/device API";
 import { addToBasket } from "../http/basketAPI";
 
 import { useParams } from "react-router-dom";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
+import { AppContext } from "../context";
+import { observer } from "mobx-react-lite";
+import { toast } from 'react-toastify';
 
-const DevicePage = () => {
-    const [device, setDevice] = useState({ info: [] });
-    const [ratingData, setRatingData] = useState(null); // user's rating
+const DevicePage = observer(() => {
+    const { api, store: { device: { 
+        device, 
+        deviceRating,
+    }}} = useContext(AppContext);
+
+    //const [ratingData, setRatingData] = useState(null); // user's rating
     const [isLoading, setIsLoading] = useState(true);
 
     const { id } = useParams();
@@ -20,47 +27,33 @@ const DevicePage = () => {
             setIsLoading(false);
             return;
         }
-        fetchDevice(id)
-        .then((data) => {
-            setDevice(data);
-        })
+        api.device.fetchDevice(id)
         .catch(e => console.log("Error when loading device data:", e.response.data.message))
         .finally(() => setIsLoading(false))
 
-        checkRating(id)
-        .then((data) => {
-            setRatingData(data);
-        })
+        api.device.checkRating(id)
         .catch(e => console.log("Error when checking device rating data:", e.response.data.message))
         
     }, []);
 
     const handleRateClick = (rate) => {
-        if (ratingData) {
-            changeRating(ratingData.id, rate)
+        if (deviceRating) {
+            // if rating for this device exists, change it:
+            api.device.changeRating(deviceRating.id, rate)
             .then(() => {
-                // updata data about rating:
-                fetchDevice(id)
-                .then((data) => {
-                    setDevice(data);
-                })
-                .catch(e => console.log("error when loading device page:", e.response.data.message))
+                // update device data about rating:
+                api.device.fetchDevice(id)
             })
-            .catch(e => alert(e.response.data.message))
+            .catch(e => toast.error("Не получилось поставить рейтинг:", e.response.data.message))
         } else {
-            addRating(device.id, rate)
-            .then((data) => {
-                setRatingData(data);
-                // updata data about rating:
-                fetchDevice(id)
-                .then((data) => {
-                    setDevice(data);
-                })
-                .catch(e => console.log("error when loading device page:", e.response.data.message))
-            }) 
-            .catch(e => alert(e.response.data.message))
+            // otherwise, create a new reating:
+            api.device.addRating(device.id, rate)
+            .then(() => {
+                // update device data about rating:
+                api.device.fetchDevice(id);
+            })
+            .catch(e => toast.error("Не получилось добавить рейтинг:", e.response.data.message))
         }
-        setRatingData({...ratingData, rate});
     }
 
     if (isLoading) return <Loader />
@@ -86,7 +79,7 @@ const DevicePage = () => {
                         </div>
                         <Rating 
                             handleRateClick={handleRateClick} 
-                            rate={ratingData?.rate || 0}/>
+                            rate={deviceRating?.rate || 0}/>
                     </Row>
                 </Col>
                 <Col md={4}>
@@ -104,18 +97,19 @@ const DevicePage = () => {
             </Row>
             <Row className="d-flex flex-column m-3">
                 <h2>Характеристики</h2>
-                {device.info.map((desc, index) => (
-                    <Row 
-                        key={desc.id} 
-                        style={{background: index % 2 ? "white" : "whitesmoke"}} 
-                        className="d-flex pt-2 pb-2">
-                        {desc.title}: {desc.description}
-                    </Row>
-                ))}
+                {device.info &&
+                    device.info.map((desc, index) => (
+                        <Row 
+                            key={desc.id} 
+                            style={{background: index % 2 ? "white" : "whitesmoke"}} 
+                            className="d-flex pt-2 pb-2">
+                            {desc.title}: {desc.description}
+                        </Row>
+                    ))}
             </Row>
             
         </Container>
     ); 
-}
- 
+})
+
 export default DevicePage;
