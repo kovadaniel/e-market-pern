@@ -5,7 +5,7 @@ import { AppContext } from "../context";
 import DeviceItem from "./DeviceItem";
 
 const DeviceList = observer(() => {
-    const { store: { device } } = useContext(AppContext)
+    const { store: { device } } = useContext(AppContext);
     return (  
         <Row>
             {device.devices && device.devices.map(d => 
